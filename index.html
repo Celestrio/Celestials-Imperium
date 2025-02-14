@@ -2,7 +2,7 @@
     async function proxyRequest() {
         const url = document.getElementById('url').value;
         if (!url) {
-            alert('Please enter a valid URL.');
+            alert('URL:');
             return;
         }
 
@@ -12,7 +12,7 @@
 
             // Check if the response is ok (status 200)
             if (!response.ok) {
-                throw new Error('Failed to fetch the URL. Status: ' + response.status);
+                throw new Error('Failed to load URL. Status: ' + response.status);
             }
 
             // Try parsing the response as JSON
@@ -20,7 +20,7 @@
 
             // If the response is not JSON, it will fail here
             if (!data.contents) {
-                throw new Error('No valid contents returned.');
+                throw new Error('Website could not load');
             }
 
             // Display the proxy response
