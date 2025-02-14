@@ -1,41 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Web Proxy</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        input, button { padding: 10px; font-size: 16px; }
-    </style>
-</head>
-<body>
-    <h1>Web Proxy</h1>
-    <p>Enter the URL you want to proxy:</p>
-    <input type="text" id="url" placeholder="Enter URL here" />
-    <button onclick="proxyRequest()">Go</button>
-
-    <h2>Response:</h2>
-    <pre id="response"></pre>
-
-    <script>
-        async function proxyRequest() {
-            const url = document.getElementById('url').value;
-            if (!url) {
-                alert('Please enter a valid URL.');
-                return;
-            }
-
-            try {
-                // Perform the proxying using fetch API
-                const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url));
-                const data = await response.json();
-                document.getElementById('response').textContent = JSON.stringify(data.contents, null, 2);
-            } catch (error) {
-                console.error('Error fetching the URL:', error);
-                document.getElementById('response').textContent = 'Error fetching the URL: ' + error.message;
-            }
+<script>
+    async function proxyRequest() {
+        const url = document.getElementById('url').value;
+        if (!url) {
+            alert('Please enter a valid URL.');
+            return;
         }
-    </script>
-</body>
-</html>
+
+        try {
+            // Perform the proxying using fetch API
+            const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url));
+
+            // Check if the response is ok (status 200)
+            if (!response.ok) {
+                throw new Error('Failed to fetch the URL. Status: ' + response.status);
+            }
+
+            // Try parsing the response as JSON
+            const data = await response.json();
+
+            // If the response is not JSON, it will fail here
+            if (!data.contents) {
+                throw new Error('No valid contents returned.');
+            }
+
+            // Display the proxy response
+            document.getElementById('response').textContent = JSON.stringify(data.contents, null, 2);
+
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('response').textContent = 'Error: ' + error.message;
+        }
+    }
+</script>
